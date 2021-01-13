@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <property name="PATH" value="logs"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_PATTERN" value="%d{HH:mm:ss.SSS} [%13.13t] [${LOG_LEVEL_PATTERN:-%5p}] [%F:%L] %m %n}"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ROLE-SIFTING-APPENDER" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>GroupProcess</key>
+            <defaultValue>web</defaultValue>
+        </discriminator>
+        <sift>
+            <appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${PATH}/tech-base_${GroupProcess}.log</file>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>${LOG_PATTERN}</pattern>
+                </encoder>
+
+                <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                    <!-- rollover daily -->
+                    <fileNamePattern>${PATH}/archived/tech-base_${GroupProcess}.%d{yyyy-MM-dd}.%i.log
+                    </fileNamePattern>
+                    <maxFileSize>10MB</maxFileSize>
+                    <maxHistory>7</maxHistory>
+                    <totalSizeCap>1GB</totalSizeCap>
+                </rollingPolicy>
+            </appender>
+        </sift>
+    </appender>
+
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ROLE-SIFTING-APPENDER"/>
+    </root>
+
+
+</configuration>

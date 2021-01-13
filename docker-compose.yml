@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: "on-failure"
+    environment:
+      TZ: "UTC"
+      MYSQL_DATABASE: TECH_BASE
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - ./docker/mysql/config:/etc/mysql/conf.d
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
